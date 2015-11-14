@@ -10,6 +10,8 @@
     <mvc:resources location="/styles/" mapping="/styles/**"/>
     <mvc:resources location="/images/" mapping="/images/**"/>
     <mvc:resources location="/js/" mapping="/js/**"/>
+
+    <mvc:resources location="/app/" mapping="/app/**"/>
     <mvc:resources location="/jsEditor/" mapping="/jsEditor//**"/>
     <import resource="env-config.xml" />
 
@@ -17,7 +19,17 @@
 
     <context:component-scan base-package="com.skymobi.monitor"/>
     <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
-        <property name="interceptors" ref="userInterceptor"/>
+        <property name="interceptors">
+            <list>
+
+                <ref bean="userInterceptor"/>
+            </list>
+                </property>
+
+
+    </bean>
+    <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+        <property name="paramName" value="lang"/>
     </bean>
     <bean id="userInterceptor" class="com.skymobi.monitor.security.UserInterceptor"/>
 
@@ -25,7 +37,9 @@
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
         <property name="messageConverters">
             <list>
-                <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+                    <property name="objectMapper" ref="jacksonObjectMapper"/>
+                </bean>
                 <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
                 <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
                 <bean class="org.springframework.http.converter.FormHttpMessageConverter"/>
@@ -41,6 +55,10 @@
         <property name="configLocation" value="/WEB-INF/velocity.properties"/>
 
     </bean>
+    <bean id="jacksonObjectMapper" class="org.codehaus.jackson.map.ObjectMapper">
+
+    </bean>
+    <bean id="jacksonSerializationConfig" class="org.codehaus.jackson.map.SerializationConfig" factory-bean="jacksonObjectMapper" factory-method="getSerializationConfig" />
 
     <!-- 根据客户端的不同的请求决定不同的view进行响应, 如 /blog/1.json /blog/1.xml -->
     <bean id="viewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
@@ -115,5 +133,11 @@
             </props>
         </property>
         <property name="defaultStatusCode" value="200"/>
+    </bean>
+
+    <bean id="messageSource" class="com.skymobi.monitor.util.SerializableResourceBundleMessageSource">
+        <property name="basename" value="i18n/messages" />
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="useCodeAsDefaultMessage" value="true"/>
     </bean>
 </beans>

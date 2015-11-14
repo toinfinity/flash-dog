@@ -16,8 +16,7 @@ public class ChartUtil {
     private static SimpleDateFormat sdf = new SimpleDateFormat("M月dd HH:mm");
 
     /**
-     * 格式成google图表，参见单元测试
-     * 如：
+     * example：
      * [[time, request, pay],
      * [7月01 00:00, 10.0, 0.0],
      * [8月01 00:00, 12.0, 2.0],
@@ -27,6 +26,9 @@ public class ChartUtil {
      * @return
      */
     public static List<List> format(List<List<MetricValue>> metricList) {
+        return format(metricList,true);
+    }
+    public static List<List> format(List<List<MetricValue>> metricList,boolean timeAsStr) {
         ArrayList<List> rows = Lists.newArrayList();
         if (metricList == null || metricList.isEmpty())
             return rows;
@@ -41,7 +43,12 @@ public class ChartUtil {
 
         rows.add(getColumnNames(metricList));
         for (MetricValue metricValue : max) {
-            List row = Lists.newArrayList(sdf.format(new Date(metricValue.getTimeStamp())));
+            Object time = metricValue.getTimeStamp();
+            if(timeAsStr){
+                time = sdf.format(new Date(metricValue.getTimeStamp()));
+            }
+
+            List row = Lists.newArrayList(time);
             for (List<MetricValue> list : metricList) {
                 row.add(findValue(metricValue.getTimeStamp(), list));
             }
@@ -49,20 +56,20 @@ public class ChartUtil {
         }
         return rows;
     }
-
     private static List getColumnNames(List<List<MetricValue>> metricList) {
         List columns = Lists.newArrayList("time");
         for (List<MetricValue> list : metricList) {
-            String metricName = list.get(0).getName();
-            columns.add(metricName);
+            if(list.size()>0){
+                String metricName = list.get(0).getName();
+                columns.add(metricName);
+            }
+
         }
         return columns;
     }
 
     /**
-     * 寻找最接近指定时间点的值
-     * 如果找不到则返回上一个时间点的值
-     *
+     *  find near value
      * @param timeStamp
      * @param list
      * @return

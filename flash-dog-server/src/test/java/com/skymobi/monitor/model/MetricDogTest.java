@@ -15,11 +15,12 @@
  */
 package com.skymobi.monitor.model;
 
+import java.util.Date;
+
 import junit.framework.TestCase;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
-
-import java.util.Date;
 
 /**
  * @author Hill.Hu

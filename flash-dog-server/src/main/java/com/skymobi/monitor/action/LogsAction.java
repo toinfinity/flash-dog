@@ -59,12 +59,7 @@ public class LogsAction {
     @Resource
     private LogsService logsService;
 
-    @RequestMapping(value = "/projects/{projectName}/logs", method = RequestMethod.GET)
-    public String test(ModelMap map, @PathVariable String projectName) {
-        Project project = projectService.findProject(projectName);
-        map.put("project", project);
-        return "logs/show";
-    }
+
 
     @RequestMapping(value = "/projects/{projectName}/logs/download", method = RequestMethod.GET)
     public void download(final HttpServletResponse response, ModelMap map, @PathVariable String projectName, LogQuery logQuery) throws IOException, ParseException {
@@ -99,7 +94,7 @@ public class LogsAction {
             public String call() throws Exception {
                 long startTime = System.currentTimeMillis();
                 //遍历游标，最长不能超过20秒
-                logger.debug("游标遍历结果:");
+                logger.debug("result:");
                 while (cursor.hasNext()) {
                     Log log = converter.read(Log.class, cursor.next());
 
@@ -115,7 +110,7 @@ public class LogsAction {
             task.get(mongWaitSeconds + 5, TimeUnit.SECONDS);
             cursor.close();
         } catch (Exception e) {
-            logger.error("查询超时 ", e);
+            logger.error("time out ", e);
             task.cancel(true);
         }
 

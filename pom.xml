@@ -28,8 +28,31 @@
             <email>hill.hu@skymobi.com</email>
         </developer>
     </developers>
+    <repositories>
+        <repository>
+            <id>oschina</id>
+            <name>oschina</name>
+            <url>http://maven.oschina.net/content/groups/public/</url>
+        </repository>
+    </repositories>
     <modules>
         <module>flash-dog-api-log4j</module>
+        <module>flash-dog-api-agent</module>
         <module>flash-dog-server</module>
     </modules>
+
+    <build>
+    <plugins>
+    <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+            <source>1.6</source>
+            <target>1.6</target>
+            <encoding>UTF-8</encoding>
+
+        </configuration>
+
+    </plugin>
+    </plugins>
+    </build>
 </project>
